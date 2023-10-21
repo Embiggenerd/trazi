@@ -1,0 +1,16 @@
+{
+  "name": "trazi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "fastify": "^4.24.3"
+  }
+}
