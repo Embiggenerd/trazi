@@ -12,6 +12,7 @@ cd concurrency
 * ### Possible improvements
     * use uwebsockets
     * place file write on put request in a worker thread - figure out read/write lock logic
+    * solve the problem on the front end - when a user inputs the put on the frontend, change state immediately without waiting for API. If an error returns, revert state to before the change and display an error.
 ## High throughput
 * minimize memory and read/write time by using flat object so read are always O(1)
 * do not depend on the event loop - minimum use of async funcs
