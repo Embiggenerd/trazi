@@ -1,68 +1,31 @@
 // Import the framework and instantiate it
 import Fastify from 'fastify'
+import { initCache } from './libs/cache.js'
 import { initDB } from './libs/db.js'
+import { createPopulationsModel } from './libs/models.js'
+import { createHandlers } from './libs/handlers.js'
+import { createApp } from './libs/app.js'
+
+export const createConfig = () => ({
+    environment: process.env.NODE_ENV,
+    populationsFileName: process.env.NODE_ENV === 'test' ? 'population.test.json' : 'population.json',
+    port: process.env.NODE_ENV === 'test' ? 5554 : 5555
+})
+const config = createConfig()
 
 const fastify = Fastify({
     logger: true
 })
 
-const db =  initDB(fastify)
-// const services = buildServices(db)
-
-fastify.get('/api/population/state/:state/city/:city', function handler(request, reply) {
-    const { state, city } = request.params
-    const name = `${city},${state}`.replace(' ', '').toLowerCase()
-    const population = populationJson[name]
-    if (population === undefined) {
-        reply
-            .code(400)
-            .type('text/plain')
-            .send('state or city can not be processed')
-        return
-    }
-    reply
-        .code(200)
-        .type('application/json')
-        .send({ population })
-})
-
-fastify.put('/api/population/state/:state/city/:city', function handler(request, reply) {
-    let statusCode = 200
-    const { state, city } = request.params
-    const body = Number(request.body)
-    if (isNaN(body) || body === undefined) {
-        reply
-            .code(400)
-            .type('text/plain')
-            .send('state or city can not be processed')
-        return
-    }
-    const name = `${city},${state}`.replace(' ', '').toLowerCase()
-    const populationCurrent = populationJson[name]
-    if (populationCurrent === undefined) {
-        statusCode = 201
-    }
-    populationJson[name] = body
-    fs.writeFile('./population.json', JSON.stringify(populationJson), err => {
-        if (err) {
-            fastify.log.error(err)
-            reply
-                .code(500)
-                .type('text/plain')
-                .send('population could not be persisted')
-            return
-        }
-    })
-    reply
-        .code(statusCode)
-        .type('text/plain')
-        .send('1')
-})
-
+const db = await initDB(fastify.log, config)
+const cache = initCache(fastify.log, db)
+const populationModel = createPopulationsModel(db, cache)
+const handlers = createHandlers(populationModel, cache)
+const app = createApp(fastify, handlers)
 
 try {
-    await fastify.listen({ port: 5555 })
+    await app.listen({ port: config.port })
 } catch (err) {
-    fastify.log.error(err)
+    app.log.error(err)
     process.exit(1)
 }

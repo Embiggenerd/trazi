@@ -1,4 +1,4 @@
 /node_modules
-population.dev.json
-population.test.json
-population.json
+**/population.dev.json
+**/population.test.json
+**/population.json

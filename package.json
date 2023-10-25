@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "test",
-    "start": "node index.js"
+    "test": "node ./libs/app_test.js",
+    "start": "NODE_ENV='dev' node index.js"
   },
   "author": "",
   "license": "ISC",
