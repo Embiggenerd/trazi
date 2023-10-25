@@ -37,6 +37,7 @@ cd concurrency
 ### Possible improvements
 * possibly consider classes
 * rethink how closures can be avoided
+* rethink throwing errors so top level handlers catches them - looks clever but can become overly complex later on.
 
 
 # Genreal concerns
