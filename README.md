@@ -40,7 +40,7 @@ cd concurrency
 * rethink throwing errors so top level handlers catches them - looks clever but can become overly complex later on.
 
 
-# Genreal concerns
+# General concerns
 ## Cities and states are not validated 
 * Cities and states are not validated - difficult to find a complete list of US cities
 ## Accessing cache concurrently
